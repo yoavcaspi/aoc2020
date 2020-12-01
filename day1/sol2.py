@@ -1,21 +1,22 @@
 import argparse
 from typing import List
-
+from itertools import  permutations
 import pytest
 
 
 def sol(data: List[str]) -> int:
     data_int: List[int] = [int(val) for val in data]
     data_int.sort()
-    start, end = 0, len(data_int) - 1
-    while start < end:
-        sum_val = data_int[start] + data_int[end]
-        if sum_val == 2020:
-            return data_int[start]*data_int[end]
-        elif sum_val < 2020:
-            start += 1
-        else:
+
+    end = len(data_int) - 1
+    while True:
+        pre_sum_val = data_int[end -1] + data_int[end]
+        if pre_sum_val >= 2020:
             end -= 1
+            break
+    for a, b, c in permutations(data_int[:end], 3):
+        if a + b + c == 2020:
+            return a*b*c
 
 
 def get_input(filename: str) -> List[str]:
@@ -44,7 +45,7 @@ INPUT = """\
 
 
 @pytest.mark.parametrize("input_,output",
-                         ((INPUT, 514579),)
+                         ((INPUT, 241861950),)
                          )
 def test(input_, output):
     assert sol(input_.splitlines()) == output
@@ -52,3 +53,4 @@ def test(input_, output):
 
 if __name__ == '__main__':
     exit(main())
+
