@@ -32,11 +32,21 @@ def find_col(val):
         return end - 1
 
 
+def seat_id(row, col):
+    return row * 8 + col
+
+
 def sol(data: List[str]) -> int:
-    val = "BBFBBBFRLR"
-    row = find_row(val)
-    column = find_col(val)
-    return row * 8 + column
+    max_id = 0
+    for line in data:
+        val = line.strip("\n")
+        row = find_row(val)
+        col = find_col(val)
+        sid = seat_id(row, col)
+        if sid > max_id:
+            max_id = sid
+
+    return max_id
 
 
 def get_input(filename: str) -> List[str]:
