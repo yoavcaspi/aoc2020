@@ -14,7 +14,7 @@ def sol(data: List[str]) -> int:
         s = match.group(4)
         counter = Counter(s)
         if min_val <= counter.get(letter, 0) <= max_val:
-            count+=1
+            count += 1
     return count
 
 
@@ -31,7 +31,6 @@ def main() -> int:
     data = get_input(args.filename)
     print(sol(data))
     return 0
-
 
 
 if __name__ == '__main__':
