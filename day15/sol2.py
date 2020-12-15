@@ -1,27 +1,24 @@
 import argparse
 import time
+from collections import deque, defaultdict
 
 import pytest
 
 
 def sol(data: str) -> int:
     start = time.time()
-    mem: dict[int, tuple[int, int]] = {}
+    mem: dict[int, deque] = defaultdict(lambda: deque(maxlen=2))
     last_value = -1
     for i, x in enumerate(data.split(",")):
         last_value = int(x)
-        mem[last_value] = (i, i)
+        mem[last_value].append(i)
     for i in range(len(mem) - 1, 30_000_000 - 1):
-        last = mem[last_value]
-        if last[0] == i:
+        last = mem[last_value][0]
+        if last == i:
             val = 0
         else:
-            val = i - last[0]
-        if val in mem:
-            val_last = mem[val][1]
-            mem[val] = (val_last, i + 1)
-        else:
-            mem[val] = (i + 1, i + 1)
+            val = i - last
+        mem[val].append(i + 1)
         last_value = val
     print(f"Took {time.time() - start}")
     return last_value
