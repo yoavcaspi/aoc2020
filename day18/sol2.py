@@ -14,15 +14,9 @@ def find_closing_braket_index(exp: str) -> int:
                 return i
 
 
-def calculate_sum(exp: str, current_result=0, current_operand="+"):
-    if current_result is None:
-        result = 0
-    else:
-        result = current_result
-    if current_operand is None:
-        operand = "+"
-    else:
-        operand = current_operand
+def calculate_sum(exp: str) -> int:
+    result = 0
+    operand = "+"
     i = 0
     while i < len(exp):
         if exp[i] == "(":
@@ -31,6 +25,7 @@ def calculate_sum(exp: str, current_result=0, current_operand="+"):
             i += bracket_size
         else:
             val = int(exp[i])
+
         if operand == "+":
             result += val
         else:
