@@ -29,23 +29,16 @@ def calculate_sum(exp: str, current_result=0, current_operand="+"):
             bracket_size = find_closing_braket_index(exp[i:])
             val = calculate_sum(exp[i + 1:i + bracket_size])
             i += bracket_size
-            if operand == "+":
-                result += val
-            else:
-                if i == len(exp) - 1:
-                    result *= val
-                else:
-                    result *= calculate_sum(exp[i + 4:])
-                    break
         else:
-            if operand == "+":
-                result += int(exp[i])
+            val = int(exp[i])
+        if operand == "+":
+            result += val
+        else:
+            if i == len(exp) - 1:
+                result *= val
             else:
-                if i == len(exp) - 1:
-                    result *= int(exp[i])
-                else:
-                    result *= calculate_sum(exp[i:])
-                    break
+                result *= calculate_sum(exp[i:])
+                break
         if i + 1 >= len(exp):
             break
         operand = exp[i + 2]
