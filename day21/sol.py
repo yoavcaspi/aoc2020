@@ -1,20 +1,18 @@
 import argparse
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 import pytest
 
 
 def sol(data: str) -> int:
     allergens_data: dict[frozenset[str], set[str]] = {}
-    all_ingredients: dict[str, int] = defaultdict(int)
+    all_ingredients: Counter[str, int] = Counter()
     for line in data.splitlines():
         line = line.strip(")")
         raw_ingredients, raw_allergens = line.split(" (contains ")
         allergens = frozenset(raw_allergens.split(", "))
         ingredients = set(raw_ingredients.split(" "))
-        for ing in ingredients:
-            all_ingredients[ing] += 1
-
+        all_ingredients.update(ingredients)
         if allergens not in allergens_data.keys():
             allergens_data[allergens] = ingredients
         else:
