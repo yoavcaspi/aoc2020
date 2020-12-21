@@ -21,7 +21,7 @@ def sol(data: str) -> int:
 
     allergens_ingredients = defaultdict()
     while len([val for val in allergens_data.values() if len(val) > 1]):
-        for key, val in allergens_data.items():
+        for key, val in list(allergens_data.items()):
             if len(val) == 1:
                 real_val, = val
                 allergens_ingredients[key] = real_val
@@ -29,6 +29,7 @@ def sol(data: str) -> int:
                     if key2 == key:
                         continue
                     val2 -= val
+                del allergens_data[key]
     res = sum(c for ing, c in all_ingredients.items()
               if ing not in allergens_ingredients.values())
     return res
