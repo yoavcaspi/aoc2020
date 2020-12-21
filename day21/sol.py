@@ -46,9 +46,6 @@ def sol(data: str) -> int:
                 allergens_ingredients[key] = {ing}
                 allergens_ingredients_final[key] = ing
                 break
-    allergens_ingredients_values = set()
-    for value in allergens_ingredients_final.values():
-        allergens_ingredients_values.add(value)
     count = 0
     for ing, c in all_ingredients.items():
         if ing not in allergens_ingredients_final.values():
@@ -89,8 +86,6 @@ def test_sol1(inp, out):
     assert sol(inp) == out
 
 
-# 1835 is low
-# 1902 is low
-# 2037 is low
+# answer is 2075
 if __name__ == '__main__':
     exit(main())
