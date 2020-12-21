@@ -6,9 +6,8 @@ import pytest
 
 
 def sol(data: str) -> int:
-    start = time.time()
     mem: dict[int, int] = defaultdict(lambda: -1)
-    last_value = -1
+    last_value = None
     for i, x in enumerate(data.split(",")):
         last_value = int(x)
         mem[last_value] = i
@@ -20,7 +19,6 @@ def sol(data: str) -> int:
             val = i - last
         mem[last_value] = i
         last_value = val
-    print(f"Took {time.time() - start}")
     return last_value
 
 
