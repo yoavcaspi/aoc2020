@@ -6,14 +6,12 @@ import pytest
 
 def sol(data: str) -> int:
     allergens_data: dict[frozenset[str], set[str]] = {}
-    foods_data: list[set[str]] = []
     all_ingredients: dict[str, int] = defaultdict(int)
     for line in data.splitlines():
         line = line.strip(")")
         raw_ingredients, raw_allergens = line.split(" (contains ")
         allergens = frozenset(raw_allergens.split(", "))
         ingredients = set(raw_ingredients.split(" "))
-        foods_data.append(ingredients)
         for ing in ingredients:
             all_ingredients[ing] += 1
 
