@@ -1,55 +1,37 @@
 import argparse
-from collections import defaultdict
-
-import pytest
+from collections import Counter
 
 
 def sol(data: str) -> str:
-    allergens_data: dict[frozenset[str], set[str]] = {}
-    foods_data: list[set[str]] = []
-    all_ingredients: dict[str, int] = defaultdict(int)
+    allergens_data: dict[str, set[str]] = {}
+    all_ingredients: Counter[str, int] = Counter()
     for line in data.splitlines():
         line = line.strip(")")
         raw_ingredients, raw_allergens = line.split(" (contains ")
         allergens = frozenset(raw_allergens.split(", "))
         ingredients = set(raw_ingredients.split(" "))
-        foods_data.append(ingredients)
-        for ing in ingredients:
-            all_ingredients[ing]+=1
+        all_ingredients.update(ingredients)
+        for allergen in allergens:
+            if allergen not in allergens_data.keys():
+                allergens_data[allergen] = set(ingredients)
+            else:
+                allergens_data[allergen] &= ingredients
 
-        if allergens not in allergens_data.keys():
-            allergens_data[allergens] = ingredients
-        else:
-            allergens_data[allergens] &= ingredients
-
-    allergens_ingredients: dict[str, set[str]] = defaultdict(set)
-    keys_witn_one = [key for key in allergens_data.keys() if len(key) == 1]
-    for key in keys_witn_one:
-        real_key, = key
-        allergens_ingredients[real_key] = set(allergens_data[key])
-        relevant_ingrediants = [value for key2, value in allergens_data.items() if
-                                key.issubset(key2)]
-        for value in relevant_ingrediants:
-            allergens_ingredients[real_key] &= value
-
-    ing_counter = defaultdict(int)
-    for val in allergens_ingredients.values():
-        for ing in val:
-            ing_counter[ing] += 1
-    ing_order = sorted([(k, v) for k, v in ing_counter.items()],
-                       key=lambda x: x[1])
-    allergens_ingredients_final = defaultdict(set)
-    for ing, _ in ing_order:
-        for key, val in allergens_ingredients.items():
-            if ing in val:
-                allergens_ingredients[key] = {ing}
-                allergens_ingredients_final[key] = ing
-                break
-        else:
-            raise Exception("What?!")
-    allerg = sorted(list((key, val) for key, val in allergens_ingredients_final.items()),
-           key=lambda x: x[0])
-    return ",".join(b for a,b in allerg)
+    allergens_ingredients: dict[str, str] = {}
+    while len([val for val in allergens_data.values() if len(val) > 1]):
+        for key, val in list(allergens_data.items()):
+            if len(val) == 1:
+                real_val, = val
+                allergens_ingredients[key] = real_val
+                for key2, val2 in allergens_data.items():
+                    if key2 == key:
+                        continue
+                    val2 -= val
+                del allergens_data[key]
+    allerg = sorted(
+        list(val for key, val in allergens_ingredients.items()),
+        key=lambda x: x[0])
+    return ",".join(allerg)
 
 
 def get_input(filename: str) -> str:
@@ -73,7 +55,6 @@ trh fvjkl sbzzf mxmxvkd (contains dairy)
 sqjhc fvjkl (contains soy)
 sqjhc mxmxvkd sbzzf (contains fish)
 """
-
 
 # @pytest.mark.parametrize(
 #     "inp, out",
