@@ -46,11 +46,8 @@ def sol(data: str) -> int:
                 allergens_ingredients[key] = {ing}
                 allergens_ingredients_final[key] = ing
                 break
-    count = 0
-    for ing, c in all_ingredients.items():
-        if ing not in allergens_ingredients_final.values():
-            count += c
-    return count
+    return sum(c for ing, c in all_ingredients.items()
+               if ing not in allergens_ingredients_final.values())
 
 
 def get_input(filename: str) -> str:
