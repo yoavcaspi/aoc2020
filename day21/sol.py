@@ -5,7 +5,7 @@ import pytest
 
 
 def sol(data: str) -> int:
-    allergens_data: dict[frozenset[str], set[str]] = {}
+    allergens_data: dict[str, set[str]] = {}
     all_ingredients: Counter[str, int] = Counter()
     for line in data.splitlines():
         line = line.strip(")")
@@ -13,33 +13,23 @@ def sol(data: str) -> int:
         allergens = frozenset(raw_allergens.split(", "))
         ingredients = set(raw_ingredients.split(" "))
         all_ingredients.update(ingredients)
-        if allergens not in allergens_data.keys():
-            allergens_data[allergens] = ingredients
-        else:
-            allergens_data[allergens] &= ingredients
-
-    allergens_ingredients: dict[str, set[str]] = defaultdict(set)
-    keys_witn_one = [key for key in allergens_data.keys() if len(key) == 1]
-    for key in keys_witn_one:
-        real_key, = key
-        allergens_ingredients[real_key] = set(allergens_data[key])
-        relevant_ingrediants = [value for key2, value in allergens_data.items()
-                                if
-                                key.issubset(key2)]
-        for value in relevant_ingrediants:
-            allergens_ingredients[real_key] &= value
+        for allergen in allergens:
+            if allergen not in allergens_data.keys():
+                allergens_data[allergen] = set(ingredients)
+            else:
+                allergens_data[allergen] &= ingredients
 
     ing_counter = defaultdict(int)
-    for val in allergens_ingredients.values():
+    for val in allergens_data.values():
         for ing in val:
             ing_counter[ing] += 1
     ing_order = sorted([(k, v) for k, v in ing_counter.items()],
                        key=lambda x: x[1])
     allergens_ingredients_final = defaultdict(set)
     for ing, _ in ing_order:
-        for key, val in allergens_ingredients.items():
+        for key, val in allergens_data.items():
             if ing in val:
-                allergens_ingredients[key] = {ing}
+                allergens_data[key] = {ing}
                 allergens_ingredients_final[key] = ing
                 break
     return sum(c for ing, c in all_ingredients.items()
